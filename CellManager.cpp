@@ -5,6 +5,8 @@ void CellManager::initGraphics(s2d::S2DGraphics* graphics) {
 	m_graphics = graphics;
 }
 
+
+// Initialization of all cells
 void CellManager::initCells(int x, int y) {
 
 	m_cellCol = x; 
@@ -19,12 +21,12 @@ void CellManager::initCells(int x, int y) {
 		}
 	}
 
-	int xC = rand() % m_cellCol, yC = rand() % m_cellRow;
+	int xC = rand() % m_cellCol - 1, yC = rand() % m_cellRow - 1;
 	
 
 	m_cells[xC + yC * m_cellCol].type = CELL_TYPE::START;
 	m_start = &m_cells[xC + yC * m_cellCol];
-	xC = rand() % m_cellCol, yC = rand() % m_cellRow;
+	xC = rand() % m_cellCol - 1, yC = rand() % m_cellRow - 1;
 	m_end = &m_cells[xC + yC * m_cellCol];
 	m_cells[xC + yC * m_cellCol].type = CELL_TYPE::END;
 }
@@ -252,9 +254,13 @@ void CellManager::executeAStar() {
 void CellManager::clickCell(float x, float y, float w, float h) {
 
 
-	float fOffSetX = w / m_cellCol, fOffSetY = h / m_cellRow;
-	int xPos = x / fOffSetX, yPos = y / fOffSetY;
-	Cell* ptr = &m_cells[xPos + yPos * m_cellCol];
+	float fOffSetX = w / (float)m_cellCol, fOffSetY = h / (float)m_cellRow;
+	float xPos = (x / fOffSetX), yPos = y / fOffSetY;
+	unsigned int idx = xPos, idy = yPos;
+
+	if (idx > m_cellCol) idx = 0; if (idy > m_cellRow) idy = 0;
+
+	Cell* ptr = &m_cells[idx+ idy * m_cellCol];
 
 
 
@@ -308,33 +314,6 @@ void CellManager::clickCell(float x, float y, float w, float h) {
 
 }
 
-void CellManager::moveStartLoc(float msX, float msY, float w, float h) {
-
-	float fOffSetX = w / m_cellCol, fOffSetY = h / m_cellRow;
-	int xPos = msX / fOffSetX, yPos = msY / fOffSetY;
-	Cell* ptr = &m_cells[xPos + yPos * m_cellCol];
-
-	if (ptr->type == CELL_TYPE::OPEN) {
-		m_start->type = CELL_TYPE::OPEN;
-		ptr->type = CELL_TYPE::START;
-		m_start = ptr;
-	}
-
-}
-
-void CellManager::moveEndLoc(float msX, float msY, float w, float h) {
-
-	float fOffSetX = w / m_cellCol, fOffSetY = h / m_cellRow;
-	int xPos = msX / fOffSetX, yPos = msY / fOffSetY;
-	Cell* ptr = &m_cells[xPos + yPos * m_cellCol];
-
-	if (ptr->type == CELL_TYPE::OPEN) {
-		m_end->type = CELL_TYPE::OPEN;
-		ptr->type = CELL_TYPE::END;
-		m_end = ptr;
-	}
-
-}
 
 Cell* CellManager::getLowestFCostFromNeighbor(Cell* tile) {
 	int x = tile->x, y = tile->y;

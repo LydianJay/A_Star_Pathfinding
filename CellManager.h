@@ -23,8 +23,7 @@ public:
 	void resetCell();
 	void executeAStar();
 	void clickCell(float x, float y, float w, float h);
-	void moveStartLoc(float msX, float msY, float w, float h);
-	void moveEndLoc(float msX, float msY, float w, float h);
+	
 private:
 	void calculateNeigbor(Cell* current);
 	Cell* getLowestFCost();
